@@ -7,6 +7,7 @@ export default class Cell {
 
         this.cellSize = cellSize;
 
+
         this.group = group;
     }
 

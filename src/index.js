@@ -115,6 +115,7 @@ function aStar() {
             return;
         }
 
+        //fofofosd
         //add neighbor to open space if it is not closed
         for (let row = -1; row <= 1; row++) {
             for (let col = -1; col <= 1; col++) {

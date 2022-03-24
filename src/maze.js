@@ -58,7 +58,8 @@ export default class Kruskals {
     }
 
     draw(ctx) {
-        ctx.fillStyle = "aqua";
+        // ctx.fillStyle = "#F2AF5C";
+        ctx.fillStyle = 'aqua'
         ctx.fillRect((this.numCellsX - 1) * this.cellSize, (this.numCellsY - 1) * this.cellSize, this.cellSize, this.cellSize)
 
         this.cells.forEach(row => {

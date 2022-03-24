@@ -7,12 +7,13 @@ export default class Cell {
 
         this.cellSize = cellSize;
 
-
         this.group = group;
     }
 
     draw(ctx) {
         ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.lineCap = "square";
         ctx.beginPath();
 
         let rowScale = this.row * this.cellSize;

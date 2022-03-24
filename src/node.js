@@ -1,5 +1,5 @@
 export default class Node {
-    constructor(row, col, startRow, startCol, endRow, endCol, prev, cellSize) {
+    constructor(row, col, startRow, startCol, endRow, endCol, prev, cellSize, color) {
         this.row = row;
         this.col = col;
 
@@ -8,6 +8,8 @@ export default class Node {
         this.endRow = endRow;
         this.endCol = endCol;
         this.cellSize = cellSize;
+
+        this.color = color;
 
         this.prev = prev;
         this.fCost = -1;
@@ -35,7 +37,9 @@ export default class Node {
     }
 
     draw(ctx) {
-        ctx.fillStyle = 'blue';
+        // ctx.fillStyle = '#67AEF5';
+        ctx.fillStyle = this.color;
         ctx.fillRect(this.col * this.cellSize, this.row * this.cellSize, this.cellSize, this.cellSize)
+        ctx.fillRect(this.startCol * this.cellSize, this.startRow * this.cellSize, this.cellSize, this.cellSize)
     }
 }

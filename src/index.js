@@ -2,13 +2,15 @@ import Cell from './cell.js'
 import Kruskals from './maze.js';
 import Player from './player.js';
 import Node from './node.js';
+import Coin from './coin.js';
+import Enemy from './enemy.js';
 
 var canvas = document.getElementById("maze");
 var ctx = canvas.getContext('2d');
 
-const gameWidth = 300;
-const gameHeight = 300;
-const cellSize = 15;
+const gameWidth = 600;
+const gameHeight = 600;
+const cellSize = 25;
 const numCellsX = gameWidth / cellSize;
 const numCellsY = gameHeight / cellSize;
 
@@ -24,10 +26,25 @@ canvas.height = gameHeight;
 let groupNum = 0;
 let cells = [];
 let posWalls = [];
+let enemyPos = []
+
 for (let row = 0; row < numCellsY; row++) {
     let temp = [];
     for (let col = 0; col < numCellsX; col++) {
         let c = new Cell(row, col, cellSize, groupNum);
+
+        if (row == 0) {
+            c.walls[0] = false;
+        } else if (row == numCellsY - 1) {
+            c.walls[1] = false;
+        }
+
+        if (col == 0) {
+            c.walls[2] = false;
+        } else if (col == numCellsX - 1) {
+            c.walls[3] = false;
+        }
+
         temp.push(c);
 
         groupNum++;
@@ -48,13 +65,18 @@ for (let row = 0; row < numCellsY - 1; row++) {
 }
 
 let kMaze = new Kruskals(numCellsX, numCellsY, cells, posWalls, cellSize);
+let player = new Player(0, 0, numCellsX, numCellsY, cellSize, cells);
 
-let player = new Player(0, 0, numCellsX, numCellsY, cellSize, cells)
+//add update method to enemy that uses aStar class
+let enemy = new Enemy(numCellsY - 1, numCellsX - 1, cellSize);
 
-let open = []
-let closed = []
+let coin1 = new Coin(numCellsX, numCellsY, cellSize, 10, player);
+let coin2 = new Coin(numCellsX, numCellsY, cellSize, 10, coin1);
+let coin3 = new Coin(numCellsX, numCellsY, cellSize, 10, coin2);
+let coins = [{ row: startRow, col: startCol }, coin1, coin2, coin3, { row: endRow, col: endCol }];
+let currentCoin = 0;
 
-let foundSolution = false;
+let solutionCells = [];
 
 function isAvailable(cRow, cCol, nRow, nCol) {
     if (!(nRow >= 0 && nRow < numCellsY && nCol >= 0 && nCol < numCellsX)) {
@@ -88,11 +110,14 @@ function checkVals(closed, open, nRow, nCol) {
         }
     }
 
-    return false; 
+    return false;
 }
 
-function aStar() {
-    open.push(new Node(startRow, startCol, startRow, startCol, endRow, endCol, null, cellSize));
+function aStar(startRow, startCol, endRow, endCol, color) {
+    let open = [];
+    let closed = [];
+
+    open.push(new Node(startRow, startCol, startRow, startCol, endRow, endCol, null, cellSize, color));
 
     let counter = 0;
     while (counter <= (numCellsX + 3) * (numCellsY + 3)) {
@@ -111,8 +136,7 @@ function aStar() {
 
         //path has been found 
         if (current.row == endRow && current.col == endCol) {
-            foundSolution = true;
-            return;
+            return closed;
         }
 
         //add neighbor to open space if it is not closed
@@ -125,7 +149,7 @@ function aStar() {
                 let newRow = current.row + row;
                 let newCol = current.col + col;
                 if (isAvailable(current.row, current.col, newRow, newCol) && !checkVals(closed, open, newRow, newCol)) {
-                    open.push(new Node(newRow, newCol, startRow, startCol, endRow, endCol, current, cellSize));
+                    open.push(new Node(newRow, newCol, startRow, startCol, endRow, endCol, current, cellSize, color));
                 }
             }
         }
@@ -150,32 +174,94 @@ function aStar() {
     }
 }
 
-aStar();
+function addCells(closed) {
+    let last = closed[closed.length - 1];
+    while (last.prev != null) {
+        solutionCells.push(last);
+        last = last.prev;
+    }
+}
+
+//put this stuff in a loop instead of hardcoding it 
+function findAllSols() {
+    for (let x = 0; x < coins.length - 1; x++) {
+        let arr = [];
+        arr = aStar(coins[x].row, coins[x].col, coins[x + 1].row, coins[x + 1].col, 'blue');
+        addCells(arr)
+    }
+}
+
+findAllSols();
 
 let lastTime = 0;
+let lastEnemyMoveTime = 0;
+let enemyMoveInterval = 3;
+
 function gameLoop(timestamp) {
     let deltaTime = timestamp - lastTime;
-    lastTime - timestamp;
-    
-    ctx.clearRect(0, 0, gameWidth, gameHeight);
-    
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, gameWidth, gameHeight);
-    
-    if (foundSolution && player.row == endRow && player.col == endCol) {
-        let last = closed[closed.length - 1];
-        while (last.prev != null) {
-            last.draw(ctx);
-            last = last.prev;
-        }
+    lastTime = timestamp;
 
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(0, 0, cellSize, cellSize)
+    ctx.clearRect(0, 0, gameWidth, gameHeight);
+    ctx.fillStyle = '#333333';
+    ctx.fillRect(0, 0, gameWidth, gameHeight);
+
+    if (player.row == endRow && player.col == endCol && currentCoin == coins.length - 1) {
+        //player won
+        solutionCells.forEach(node => {
+            node.draw(ctx);
+        })
+
+        coins.forEach(coin => {
+            try {
+                coin.draw(ctx);
+            } catch (error) { }
+        })
+
+        alert('You won!')
+    } else if (enemy.row == player.row && enemy.col == player.col) {
+        alert('died')
+    }
+
+    if (currentCoin < coins.length - 1) {
+        if (player.row == coins[currentCoin].row && player.col == coins[currentCoin].col) {
+            currentCoin++;
+        }
     }
 
     player.draw(ctx);
+
+    if (currentCoin < coins.length - 1) {
+        coins[currentCoin].draw(ctx);
+    }
+
+    if (lastEnemyMoveTime <= 0) {
+        enemyPos = aStar(player.row, player.col, enemy.row, enemy.col, 'red')
+        let move = enemyPos.pop();
+
+        enemy.row = move.row;
+        enemy.col = move.col;
+
+        lastEnemyMoveTime = enemyMoveInterval;
+    } else {
+        lastEnemyMoveTime -= 1 / deltaTime;
+    }
+
+
+    enemy.draw(ctx);
+
     kMaze.draw(ctx);
     requestAnimationFrame(gameLoop)
+}
+
+//reset all values
+//display start screen
+
+function startGame() {
+    //when start button pressed, hide start screen and start game
+}
+
+function endGame() {
+    //when game ends, pause game and show end screen 
 }
 
 gameLoop(0)

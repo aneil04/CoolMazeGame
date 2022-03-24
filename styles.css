@@ -8,13 +8,19 @@ body {
     height: 100vh;
     display: flex; 
     justify-content: center; 
-    background-color: rgb(244, 248, 250);
+    background-color: rgb(31, 31, 31);
     margin: 0;
 }
 
 .maze-canvas {
     margin: 50px;
     padding: 0;
-    border:5px solid rgb(145, 213, 247);
+    border:5px solid rgb(255, 255, 255);
     outline: none;
+}
+
+.title {
+    font-size: 35px;
+    font-family: monospace;
+    
 }

@@ -1,39 +1,22 @@
-[debug] [2022-03-20T03:04:30.763Z] ----------------------------------------------------------------------
-[debug] [2022-03-20T03:04:30.766Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\1019309\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
-[debug] [2022-03-20T03:04:30.766Z] CLI Version:   10.4.0
-[debug] [2022-03-20T03:04:30.766Z] Platform:      win32
-[debug] [2022-03-20T03:04:30.767Z] Node Version:  v16.13.2
-[debug] [2022-03-20T03:04:30.768Z] Time:          Sat Mar 19 2022 23:04:30 GMT-0400 (Eastern Daylight Time)
-[debug] [2022-03-20T03:04:30.768Z] ----------------------------------------------------------------------
+[debug] [2022-03-21T15:49:49.197Z] ----------------------------------------------------------------------
+[debug] [2022-03-21T15:49:49.199Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\1019309\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js login
+[debug] [2022-03-21T15:49:49.199Z] CLI Version:   10.4.0
+[debug] [2022-03-21T15:49:49.199Z] Platform:      win32
+[debug] [2022-03-21T15:49:49.200Z] Node Version:  v16.13.2
+[debug] [2022-03-21T15:49:49.201Z] Time:          Mon Mar 21 2022 11:49:49 GMT-0400 (Eastern Daylight Time)
+[debug] [2022-03-21T15:49:49.201Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2022-03-20T03:04:30.780Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2022-03-20T03:04:30.781Z] > authorizing via signed-in user (aneil2642@gmail.com)
+[info] i  Firebase optionally collects CLI usage and error reporting information to help improve our products. Data is collected in accordance with Google's privacy policy (https://policies.google.com/privacy) and is not used to identify you.
+ 
+[info] i  To change your data collection preference at any time, run `firebase logout` and log in again. 
 [info] 
-     ######## #### ########  ######## ########     ###     ######  ########
-     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
-     ######    ##  ########  ######   ########  #########  ######  ######
-     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
-     ##       #### ##     ## ######## ########  ##     ##  ######  ########
-
-You're about to initialize a Firebase project in this directory:
-
-  C:\Neil\Programming\Javascript\MazeGame
-
-Before we get started, keep in mind:
-
-  * You are currently outside your home directory
-
+[info] Visit this URL on this device to log in:
+[info] https://accounts.google.com/o/oauth2/auth?client_id=563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com&scope=email%20openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloudplatformprojects.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffirebase%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform&response_type=code&state=718989837&redirect_uri=http%3A%2F%2Flocalhost%3A9005
 [info] 
-=== Project Setup
-[info] 
-[info] First, let's associate this project directory with a Firebase project.
-[info] You can create multiple project aliases by running firebase use --add, 
-[info] but for now we'll just set up a default project.
-[info] 
-[info] 
-=== Hosting Setup
-[info] 
-[info] Your public directory is the folder (relative to your project directory) that
-[info] will contain Hosting assets to be uploaded with firebase deploy. If you
-[info] have a build process for your assets, use your build's output directory.
-[info] 
+[info] Waiting for authentication...
+[debug] [2022-03-21T15:49:52.941Z] Error: spawn cmd ENOENT
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:282:19)
+    at onErrorNT (node:internal/child_process:477:16)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21)
+[error] 
+[error] Error: An unexpected error has occurred.

@@ -24,3 +24,23 @@ body {
     font-family: monospace;
     
 }
+
+.active {
+    scale: 1;
+}
+
+.modal {
+    background-color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 225px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: none;
+    padding: 50px;
+}

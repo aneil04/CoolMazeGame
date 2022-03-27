@@ -68,7 +68,9 @@ let kMaze = new Kruskals(numCellsX, numCellsY, cells, posWalls, cellSize);
 let player = new Player(0, 0, numCellsX, numCellsY, cellSize, cells);
 
 //add update method to enemy that uses aStar class
-let enemy = new Enemy(numCellsY - 1, numCellsX - 1, cellSize);
+let enemy1 = new Enemy(7, 10, cellSize);
+let enemy2 = new Enemy(15, 13, cellSize);
+let enemies = [enemy1]
 
 let coin1 = new Coin(numCellsX, numCellsY, cellSize, 10, player);
 let coin2 = new Coin(numCellsX, numCellsY, cellSize, 10, coin1);
@@ -195,7 +197,7 @@ findAllSols();
 
 let lastTime = 0;
 let lastEnemyMoveTime = 0;
-let enemyMoveInterval = 3;
+let enemyMoveInterval = 2;
 
 function gameLoop(timestamp) {
     let deltaTime = timestamp - lastTime;
@@ -204,23 +206,6 @@ function gameLoop(timestamp) {
     ctx.clearRect(0, 0, gameWidth, gameHeight);
     ctx.fillStyle = '#333333';
     ctx.fillRect(0, 0, gameWidth, gameHeight);
-
-    if (player.row == endRow && player.col == endCol && currentCoin == coins.length - 1) {
-        //player won
-        solutionCells.forEach(node => {
-            node.draw(ctx);
-        })
-
-        coins.forEach(coin => {
-            try {
-                coin.draw(ctx);
-            } catch (error) { }
-        })
-
-        alert('You won!')
-    } else if (enemy.row == player.row && enemy.col == player.col) {
-        alert('died')
-    }
 
     if (currentCoin < coins.length - 1) {
         if (player.row == coins[currentCoin].row && player.col == coins[currentCoin].col) {
@@ -234,22 +219,61 @@ function gameLoop(timestamp) {
         coins[currentCoin].draw(ctx);
     }
 
-    if (lastEnemyMoveTime <= 0) {
-        enemyPos = aStar(player.row, player.col, enemy.row, enemy.col, 'red')
-        let move = enemyPos.pop();
+    /* 
+    
+    3 different enemies:
+    
+    1 goes directly to the player
+    1 goes to the coin but if the player is within a certain range of the coin, it goes to the player
+    1 goes to:
+        clone of player if it exists
+            once wihtin a certain dist of the clone, it goes to the player
+        previous position of player
+    */
 
-        enemy.row = move.row;
-        enemy.col = move.col;
+    if (lastEnemyMoveTime <= 0) {
+        for (let x = 0; x < enemies.length; x++) {
+            if (lastEnemyMoveTime <= 0) {
+                enemyPos = aStar(player.row, player.col, enemies[x].row, enemies[x].col, 'red')
+                let move = enemyPos.pop();
+
+                enemies[x].row = move.row;
+                enemies[x].col = move.col;
+            }
+        }
 
         lastEnemyMoveTime = enemyMoveInterval;
     } else {
         lastEnemyMoveTime -= 1 / deltaTime;
     }
 
-
-    enemy.draw(ctx);
+    enemies.forEach(enemy => {
+        enemy.draw(ctx)
+    })
 
     kMaze.draw(ctx);
+
+    if (player.row == endRow && player.col == endCol && currentCoin == coins.length - 1) {
+        //player won
+        solutionCells.forEach(node => {
+            node.draw(ctx);
+        })
+
+        coins.forEach(coin => {
+            try {
+                coin.draw(ctx);
+            } catch (error) { }
+        })
+
+        // alert('You won!')
+    } else {
+        enemies.forEach(enemy => {
+            if (enemy.row == player.row && enemy.col == player.col) {
+                alert('died')
+            }
+        })
+    }
+
     requestAnimationFrame(gameLoop)
 }
 

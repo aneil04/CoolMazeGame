@@ -37,8 +37,8 @@ export default class Node {
     }
 
     draw(ctx) {
-        // ctx.fillStyle = '#67AEF5';
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = '#67AEF5';
+        // ctx.fillStyle = this.color;
         ctx.fillRect(this.col * this.cellSize, this.row * this.cellSize, this.cellSize, this.cellSize)
         ctx.fillRect(this.startCol * this.cellSize, this.startRow * this.cellSize, this.cellSize, this.cellSize)
     }

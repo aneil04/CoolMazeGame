@@ -11,19 +11,28 @@
 </head>
 
 <body>
-    <div class="title">Maze Game</div>
-    <div class="maze-container">
-        <canvas id="maze" tabindex="1" class="maze-canvas">
-        </canvas>
+    <div class="nav">
+        <div class="title">Maze Game</div>
     </div>
-    <div class="modal">
-        this should have:
-        - number of moves
-        - coins collected
-        - won or lose
-        - play again btn
-        - share score btn
-        - hide btn 
+    <div class="container">
+        <div class="maze-container">
+            <div class="game-info">
+                <div id="timer" class="game-txt">1:20</div>
+                <div id="moves" class="game-txt">0 moves</div>
+                <div id="coins-collected" class="game-txt red">0/3 coins</div>
+            </div>
+            <canvas id="maze" tabindex="1" class="maze-canvas">
+            </canvas>
+        </div>
+        <div class="modal">
+            this should have:
+            - number of moves
+            - coins collected
+            - won or lose
+            - play again btn
+            - share score btn
+            - hide btn
+        </div>
     </div>
 </body>
 

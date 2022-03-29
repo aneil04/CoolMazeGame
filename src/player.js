@@ -13,6 +13,8 @@ export default class Player {
         this.cells = cells;
 
         this.moves = 0;
+        this.movesElement = document.getElementById('moves');
+
 
         document.getElementById('maze').addEventListener('keydown', (e) => {
             if (e.key == 'w' || e.key == "ArrowUp") { //move up
@@ -59,6 +61,8 @@ export default class Player {
                 this.cloneRow = this.row;
                 this.cloneCol = this.col;
             }
+
+            this.movesElement.innerText = this.moves + (this.moves == 1? " move" : " moves");
         })
     }
 

@@ -8,6 +8,11 @@ import Enemy from './enemy.js';
 var canvas = document.getElementById("maze");
 var ctx = canvas.getContext('2d');
 
+let coinsElement = document.getElementById('coins-collected');
+let timeElement = document.getElementById('timer');
+
+let time = 0;
+
 const gameWidth = 600;
 const gameHeight = 600;
 const cellSize = 25;
@@ -67,8 +72,9 @@ for (let row = 0; row < numCellsY - 1; row++) {
 let kMaze = new Kruskals(numCellsX, numCellsY, cells, posWalls, cellSize);
 let player = new Player(0, 0, numCellsX, numCellsY, cellSize, cells);
 
+
 //add update method to enemy that uses aStar class
-let enemy1 = new Enemy(7, 10, cellSize);
+let enemy1 = new Enemy(numCellsX - 1, numCellsY - 1, cellSize);
 let enemy2 = new Enemy(15, 13, cellSize);
 let enemies = [enemy1]
 
@@ -197,11 +203,20 @@ findAllSols();
 
 let lastTime = 0;
 let lastEnemyMoveTime = 0;
-let enemyMoveInterval = 2;
+let enemyMoveInterval = 0.5;
+let wonGame = false;
 
 function gameLoop(timestamp) {
     let deltaTime = timestamp - lastTime;
     lastTime = timestamp;
+    
+    if (!wonGame) {
+        time += deltaTime / 1000;
+        if (time > 60) {
+
+        }
+        timeElement.innerText = Math.floor(time);
+    }
 
     ctx.clearRect(0, 0, gameWidth, gameHeight);
     ctx.fillStyle = '#333333';
@@ -209,6 +224,11 @@ function gameLoop(timestamp) {
 
     if (currentCoin < coins.length - 1) {
         if (player.row == coins[currentCoin].row && player.col == coins[currentCoin].col) {
+            coinsElement.innerText = (currentCoin) + "/3 coins"
+            if (currentCoin == 3) {
+                coinsElement.classList.remove('red');
+                coinsElement.classList.add('green');
+            }
             currentCoin++;
         }
     }
@@ -231,6 +251,7 @@ function gameLoop(timestamp) {
         previous position of player
     */
 
+    //run this loop when the player makes a move 
     if (lastEnemyMoveTime <= 0) {
         for (let x = 0; x < enemies.length; x++) {
             if (lastEnemyMoveTime <= 0) {
@@ -244,7 +265,7 @@ function gameLoop(timestamp) {
 
         lastEnemyMoveTime = enemyMoveInterval;
     } else {
-        lastEnemyMoveTime -= 1 / deltaTime;
+        lastEnemyMoveTime -= deltaTime / 1000;
     }
 
     enemies.forEach(enemy => {
@@ -254,6 +275,7 @@ function gameLoop(timestamp) {
     kMaze.draw(ctx);
 
     if (player.row == endRow && player.col == endCol && currentCoin == coins.length - 1) {
+        wonGame = true;
         //player won
         solutionCells.forEach(node => {
             node.draw(ctx);

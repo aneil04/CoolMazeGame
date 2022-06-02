@@ -6,6 +6,12 @@ import Coin from './coin.js';
 import Enemy from './enemy.js';
 
 var canvas = document.getElementById("maze");
+
+canvas.addEventListener("click", () => {
+    if (died || wonGame) {
+        reset();
+    }
+})
 var ctx = canvas.getContext('2d');
 
 let coinsElement = document.getElementById('coins-collected');
@@ -205,8 +211,13 @@ let lastTime = 0;
 let lastEnemyMoveTime = 0;
 let enemyMoveInterval = 0.5;
 let wonGame = false;
+let died = false;
 
 function gameLoop(timestamp) {
+    if (died) {
+        return;
+    }
+
     let deltaTime = timestamp - lastTime;
     lastTime = timestamp;
     
@@ -252,14 +263,16 @@ function gameLoop(timestamp) {
     */
 
     //run this loop when the player makes a move 
-    if (lastEnemyMoveTime <= 0) {
+    if (lastEnemyMoveTime <= 0 && !wonGame) {
         for (let x = 0; x < enemies.length; x++) {
             if (lastEnemyMoveTime <= 0) {
                 enemyPos = aStar(player.row, player.col, enemies[x].row, enemies[x].col, 'red')
                 let move = enemyPos.pop();
 
-                enemies[x].row = move.row;
-                enemies[x].col = move.col;
+                if (move) {
+                    enemies[x].row = move.row;
+                    enemies[x].col = move.col;
+                }
             }
         }
 
@@ -287,11 +300,14 @@ function gameLoop(timestamp) {
             } catch (error) { }
         })
 
-        // alert('You won!')
+        canvas.classList.remove('maze-outline-white');
+        canvas.classList.add('maze-outline-green');
     } else {
         enemies.forEach(enemy => {
             if (enemy.row == player.row && enemy.col == player.col) {
-                alert('died')
+                died = true;
+                canvas.classList.remove('maze-outline-white');
+                canvas.classList.add('maze-outline-red');
             }
         })
     }
@@ -308,6 +324,37 @@ function startGame() {
 
 function endGame() {
     //when game ends, pause game and show end screen 
+
+}
+
+function pause() {
+
+}
+
+function reset() {
+    enemies.forEach(enemy => {
+        enemy.resetPos();
+    })
+
+    player.row = startRow;
+    player.col = startCol;
+    player.moves = 0;
+    player.movesElement.innerText = "0 moves";
+    currentCoin = 0;
+
+    coinsElement.classList.remove('green');
+    coinsElement.classList.add('red');
+    coinsElement.innerText = "0/3 coins";
+    
+    wonGame = false;
+    time = 0;
+    died = false;
+    
+    canvas.classList.remove('maze-outline-red');
+    canvas.classList.remove('maze-outline-green');
+    canvas.classList.add('maze-outline-white');
+
+    requestAnimationFrame(gameLoop)
 }
 
 gameLoop(0)

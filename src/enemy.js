@@ -3,7 +3,15 @@ export default class Enemy {
         this.row = startRow;
         this.col = startCol;
 
+        this.startCol = startCol;
+        this.startRow = startRow;
+
         this.cellSize = cellSize;
+    }
+
+    resetPos() {
+        this.row = this.startCol;
+        this.col = this.startCol
     }
 
     draw(ctx) {
